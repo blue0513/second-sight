@@ -38,11 +38,13 @@
 (defvar second-sight-buffer-color "black")
 
 (defun second-sight--get-file-content (filename)
+  "Read contents from FILENAME."
   (with-temp-buffer
     (insert-file-contents filename)
     (buffer-substring-no-properties (point-min) (point-max))))
 
 (defun second-sight--generate-frame (string)
+  "Create posframe with STRING by using `posframe-show'."
   (posframe-show
    second-sight-buffer
    :string (or string "No file content found")
@@ -51,23 +53,25 @@
    :position (point)))
 
 (defun second-sight--delete-frame ()
+  "Delete posframe."
   (setq second-sight-buffer-showing nil)
-  (posframe-delete-frame second-sight-buffer))
+  (posframe-delete second-sight-buffer))
 
 (defun second-sight--show-frame (content)
+  "Show posframe with CONTENT."
   (setq second-sight-buffer-showing t)
   (second-sight--generate-frame content))
 
 (defun second-sight--show-file (filename)
+  "Show posframe with FILENAME if possible."
   (if (and (null second-sight-buffer-showing)
 	   (file-exists-p filename)
 	   (posframe-workable-p))
       (let* ((content (second-sight--get-file-content filename)))
-	(second-sight--show-frame content))
-    (progn
-      (second-sight--delete-frame))))
+	(second-sight--show-frame content))))
 
 (defun second-sight--show-file-safely (filename)
+  "Show posframe with FILENAME's content after validations."
   (if second-sight-buffer-showing
       (second-sight--delete-frame)
     (if (and filename
@@ -78,26 +82,29 @@
       (message "No valid filename found"))))
 
 (defun second-sight-file (filename)
+  "Basic function to show second-sight's posframe with FILENAME."
   (second-sight--show-file-safely filename))
 
 (defun second-sight-delete-frame ()
+  "Delete second-sight's posframe."
   (interactive)
   (second-sight--delete-frame))
 
-;; For thing-at-point
 (defun second-sight-at-point ()
+  "Second-sight for `thing-at-point'."
   (interactive)
   (let* ((filename (thing-at-point 'symbol)))
     (second-sight-file filename)))
 
-;; For dired
 (defun second-sight-dired ()
+  "Second-sight for `dired'."
   (interactive)
   (let* ((filename (dired-get-filename)))
     (second-sight-file filename)))
 
-;; For counsel-find-file, counsel-recentf, counsel-git, dumb-jump with ivy
 (defun second-sight-counsel ()
+  "Second-sight for `counsel-find-file', `counsel-recentf', `counsel-git'.
+And for `dumb-jump_with_ivy'."
   (interactive)
   (let* ((raw-string (ivy-state-current ivy-last))
 	 (filename (replace-regexp-in-string "\\:[0-9]\\:.*" "" raw-string)))
