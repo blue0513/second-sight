@@ -1,10 +1,10 @@
-# WIP: Second Sight
+# Second Sight
 
-Quickly view file-contents without visiting the file, as if you had __second-sight__.
+Quickly view file-contents without visiting the file, as if you had _second-sight_.
 
 ## What's This
 
-You can view file-contents without opening or visiting the file.
+You can view file-contents without visiting the file.
 
 This package will reduce the number of times you open a buffer.  
 For example, after you call `find-file`, you can see the file-content without jumping to the file.
@@ -14,6 +14,13 @@ For example, after you call `find-file`, you can see the file-content without ju
 [![counsel](https://i.gyazo.com/7050db79f0e21280cd67f00e46a0ec65.gif)](https://gyazo.com/7050db79f0e21280cd67f00e46a0ec65)
 
 ## Setup
+
+### Requirements
+
+This package requires [posframe.el](https://github.com/tumashu/posframe).  
+You need to install `posframe` before.
+
+### Settings
 
 `git clone` and edit your init.el as below.
 
@@ -25,22 +32,17 @@ For example, after you call `find-file`, you can see the file-content without ju
 (global-set-key (kbd "YOUR KEY") 'second-sight)
 ```
 
-### Requirements
-
-This package requires [posframe.el](https://github.com/tumashu/posframe).  
-You need to install `posframe` before.
-
 ## Usage
 
 ### Basic Usage
 
-After evaluating this expression, then `posframe` will appear with file-content.
+After evaluating this expression, `posframe` will appear with the file-content.
 
 ```elisp
 (second-sight-file "filepath")
 ```
 
-When your cursor is on the filepath like below, you can execute `M-x second-sight-at-point`.
+When your cursor is on the filepath like below, you can execute `M-x second-sight`.
 
 ```
 "/pa|th/to/file"
@@ -50,11 +52,11 @@ When your cursor is on the filepath like below, you can execute `M-x second-sigh
 ### Advanced Usage
 
 This package partially supports [ivy/counsel](https://github.com/abo-abo/swiper).  
-After you execute `counsel-find-file`, `counsel-recentf`, `counsel-git` etc, you can call `second-sight-counsel`.
+After you execute `counsel-find-file`, `counsel-recentf`, `counsel-git` etc, you can call `second-sight`.
 
 **Notice:**  
 This package use a bit hacks to get one of `ivy` candidates like `(ivy-state-current ivy-last)`
-So if you want to use this package with `counsel`, you should assign short-cut key as below to avoid selecting a wrong candidate.
+So if you want to use this package with `counsel`, you should assign a short-cut key as below to avoid selecting a wrong candidate.
 
 ```elisp
 (global-set-key (kbd "YOUR KEY") 'second-sight)
