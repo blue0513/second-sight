@@ -37,10 +37,10 @@
 (defvar second-sight-buffer-min-width 20)
 (defvar second-sight-buffer-color "black")
 
-(defun second-sight--get-file-content (filename)
-  "Read contents from FILENAME."
+(defun second-sight--get-file-content (full-path)
+  "Read contents from FULL-PATH."
   (with-temp-buffer
-    (insert-file-contents filename)
+    (insert-file-contents full-path)
     (buffer-substring-no-properties (point-min) (point-max))))
 
 (defun second-sight--generate-frame (string)
@@ -62,28 +62,28 @@
   (setq second-sight-buffer-showing t)
   (second-sight--generate-frame content))
 
-(defun second-sight--show-file (filename)
-  "Show posframe with FILENAME if possible."
+(defun second-sight--show-file (full-path)
+  "Show posframe with file-contents in FULL-PATH if possible."
   (if (and (null second-sight-buffer-showing)
-	   (file-exists-p filename)
+	   (file-exists-p full-path)
 	   (posframe-workable-p))
-      (let* ((content (second-sight--get-file-content filename)))
+      (let* ((content (second-sight--get-file-content full-path)))
 	(second-sight--show-frame content))))
 
-(defun second-sight--show-file-safely (filename)
-  "Show posframe with FILENAME's content after validations."
+(defun second-sight--show-file-safely (full-path)
+  "Show posframe with file-contents in FULL-PATH after validations."
   (if second-sight-buffer-showing
       (second-sight--delete-frame)
-    (if (and filename
-	     (file-exists-p filename)
-	     (file-exists-p (expand-file-name filename)))
-	(let* ((full-filepath (expand-file-name filename)))
-	  (second-sight--show-file full-filepath))
-      (message "No valid filename found"))))
+    (if (and full-path
+	     (file-exists-p full-path)
+	     (file-exists-p (expand-file-name full-path)))
+	(let* ((target-path (expand-file-name full-path)))
+	  (second-sight--show-file target-path))
+      (message (format "No valid path found: %s" full-path)))))
 
-(defun second-sight-file (filename)
-  "Basic function to show second-sight's posframe with FILENAME."
-  (second-sight--show-file-safely filename))
+(defun second-sight-file (full-path)
+  "Basic function to show second-sight's posframe with file in FULL-PATH."
+  (second-sight--show-file-safely full-path))
 
 (defun second-sight-delete-frame ()
   "Delete second-sight's posframe."
@@ -93,22 +93,41 @@
 (defun second-sight-at-point ()
   "Second-sight for `thing-at-point'."
   (interactive)
-  (let* ((filename (thing-at-point 'symbol)))
-    (second-sight-file filename)))
+  (let* ((full-path (thing-at-point 'symbol)))
+    (second-sight-file full-path)))
 
 (defun second-sight-dired ()
   "Second-sight for `dired'."
   (interactive)
-  (let* ((filename (dired-get-filename)))
-    (second-sight-file filename)))
+  (let* ((full-path (dired-get-filename)))
+    (second-sight-file full-path)))
 
 (defun second-sight-counsel ()
   "Second-sight for `counsel-find-file', `counsel-recentf', `counsel-git'.
 And for `dumb-jump_with_ivy'."
   (interactive)
   (let* ((raw-string (ivy-state-current ivy-last))
-	 (filename (replace-regexp-in-string "\\:[0-9]\\:.*" "" raw-string)))
-    (second-sight-file filename)))
+	 (filename (replace-regexp-in-string "\\:[0-9]\\:.*" "" raw-string))
+	 (full-path (if (file-exists-p (expand-file-name filename))
+			(expand-file-name filename)
+		      (expand-file-name
+		       (concat "~" (thing-at-point 'symbol) filename)))))
+    (second-sight-file full-path)))
+
+(defun second-sight ()
+  "Quickly view the file-content without visiting buffer.
+This command will call the proper function according to the situation."
+  (interactive)
+  (cond
+   ((eq major-mode 'dired-mode)
+    (second-sight-dired))
+   ((file-exists-p (format "%s" (thing-at-point 'symbol)))
+    (second-sight-at-point))
+   ((and (bound-and-true-p ivy-mode) (active-minibuffer-window))
+    (second-sight-counsel))
+   (second-sight-buffer-showing
+    (second-sight-delete-frame))
+   (t (message "second-sight: No valid command found"))))
 
 ;; * provide
 

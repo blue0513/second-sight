@@ -20,6 +20,9 @@ For example, after you call `find-file`, you can see the file-content without ju
 ```elisp
 (add-to-list 'load-path "/pscp/to/second-sight")
 (require 'second-sight)
+
+;; optional but recommended
+(global-set-key (kbd "YOUR KEY") 'second-sight)
 ```
 
 ### Requirements
@@ -46,7 +49,7 @@ When your cursor is on the filepath like below, you can execute `M-x second-sigh
 
 ### Advanced Usage
 
-This package partly supports [ivy/counsel](https://github.com/abo-abo/swiper).  
+This package partially supports [ivy/counsel](https://github.com/abo-abo/swiper).  
 After you execute `counsel-find-file`, `counsel-recentf`, `counsel-git` etc, you can call `second-sight-counsel`.
 
 **Notice:**  
@@ -54,5 +57,5 @@ This package use a bit hacks to get one of `ivy` candidates like `(ivy-state-cur
 So if you want to use this package with `counsel`, you should assign short-cut key as below to avoid selecting a wrong candidate.
 
 ```elisp
-(global-set-key (kbd "YOUR KEY") 'second-sight-counsel)
+(global-set-key (kbd "YOUR KEY") 'second-sight)
 ```
