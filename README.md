@@ -51,7 +51,7 @@ When your cursor is on the filepath like below, you can execute `M-x second-sigh
     ↑ your cursor
 ```
 
-### Advanced Usage
+### Advanced Usage with ivy/counsel
 
 This package partially supports [ivy/counsel](https://github.com/abo-abo/swiper).  
 After you execute `counsel-find-file`, `counsel-recentf`, `counsel-git` etc, you can call `second-sight`.
@@ -63,3 +63,10 @@ So if you want to use this package with `counsel`, you should assign a short-cut
 ```elisp
 (global-set-key (kbd "YOUR KEY") 'second-sight)
 ```
+
+## Extension
+
+`second-sight` provides `(second-sight-file filepath)` function.  
+This function can generate posframe with file-contents. If you want to use it with your favorite commands like vanilla `find-file`, `helm` etc, you should call `second-sight-file` with filepath while selecting candidates.
+
+Of course, PR to support other commands is also welcome!
