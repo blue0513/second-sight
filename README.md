@@ -9,9 +9,9 @@ You can view file-contents without opening or visiting the file.
 This package will reduce the number of times you open a buffer.  
 For example, after you call `find-file`, you can see the file-content without jumping to the file.
 
-![thing-at-point.gif]()
+[![thing-at-point](https://i.gyazo.com/04cf3320ecec8a007354d72456fb4d26.gif)](https://gyazo.com/04cf3320ecec8a007354d72456fb4d26)
 
-![counsel.gif]()
+[![counsel](https://i.gyazo.com/7050db79f0e21280cd67f00e46a0ec65.gif)](https://gyazo.com/7050db79f0e21280cd67f00e46a0ec65)
 
 ## Setup
 
